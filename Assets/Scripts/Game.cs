@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Unity.VisualScripting;
 public class Game : MonoBehaviour
 {
     public GameObject chesspiece;
@@ -15,6 +18,7 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         playerWhite = new GameObject[]
         {
             Create("white_rook",0,0),Create("white_knight",1,0),Create("white_bishop",2,0),
@@ -65,10 +69,45 @@ public class Game : MonoBehaviour
     }
     public bool PositionOnBoard(int x, int y)
     {
-        if (x < 0|| y < 0 || x >= positions.GetLength(0) || y >= positions.GetLength(1))
+        if (x < 0 || y < 0 || x >= positions.GetLength(0) || y >= positions.GetLength(1))
         {
             return false;
         }
         return true;
+    }
+    public string GetCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+    public bool IsGameOver()
+    {
+        return gameOver;
+    }
+    public void NextTurn()
+    {
+        if (currentPlayer.Equals("white"))
+        {
+            currentPlayer = "black";
+        }
+        else
+        {
+            currentPlayer = "white";
+        }
+    }
+    public void Update()
+    {
+        if (gameOver == true && Input.GetMouseButtonDown(0))
+        {
+            gameOver = false;
+
+            SceneManager.LoadScene("Game");
+        }
+    }
+    public void Winner(string winner)
+    {
+        gameOver = true;
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = winner + " take the W!!!";
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
     }
 }
